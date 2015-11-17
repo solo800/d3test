@@ -1,87 +1,216 @@
+/*
+ * The before setting a radial be sure to update the url which you will access your
+ * data from in the d3.json() function
+ *
+ * Additionally you will probably want to update the main container div which is
+ * currently set to access an element with id #graph-area
+ */
 (function() {
   $(document).ready(function() {
 
-    d3.json("/data/objectives/increase_custumer_value.tdnps.json", function(error, data) {
+    //Update the immediately following url to be wherever your data is stored
+    d3.json("/data/objectives/increase_franchise_value_lh.anp.json", function(error, data) {
       console.log(error ? error : data);
 
-      var dataArr = toArray(data.breakdowns.oe.modes.lh.kpis),
-        winH = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-        winW = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-        graphH,
-        graphW;
+      //Get the waterfall chart
+      var dataArr = data.charts.filter(function(chart) {
+        if('undefined' === chart.type) return false;
 
-      //Set the graph-area to be 50% of the height of the window
-      $('.graph-area').height(winH / 2);
+        return 'waterfall' === chart.type;
+      });
 
-      graphH = $('.graph-area').height();
-      graphW = $('.graph-area').width();
+      // console.log(dataArr);
 
-      var svg = d3.select('.graph-area').append('svg')
-        .attr({
-          height: graphH,
-          width: graphW
-        });
+      var wfData = formatWaterfallData(dataArr);
 
-      // dataArr.forEach(function(oeKpi) {
-      //   console.log(oeKpi);
+      // console.log('formatted', wfData);
 
-        buildBar(dataArr, 'circle_value1', svg);
-      // });
+      var xAxisLabels = wfData.map(function(dObj) { return dObj.xAxis; });
+
+      var margin = {top: 30, right: 50, bottom: 30, left: 50},
+        padding = 2,
+        height = $('#graph-area').height() - margin.top - margin.bottom,
+        width = $('#graph-area').width() - margin.left - margin.right;
+
+      var xScale = d3.scale.linear()
+          .domain([0, wfData.length])
+          .range([0, width]),
+
+        yScale = d3.scale.linear()
+            .domain([0, d3.max(wfData, function(d) { return d.value + d.value * 0.1; })])
+            .range([0, height]),
+
+        xAxisScale = d3.scale.ordinal()
+            .domain(xAxisLabels)
+            .rangePoints([0, width]),
+
+        yAxisScale = d3.scale.linear()
+            // Adding ten percent of the total ensures the final tick appears
+            .domain([0, d3.max(wfData, function(d) { return d.value + d.value * 0.1; })])
+            .range([height, 0]),
+
+        xAxisGen = d3.svg.axis().scale(xAxisScale).orient("bottom");
+
+        yAxisGen = d3.svg.axis().scale(yAxisScale).orient('left');
+
+      var svg = d3.select('#graph-area').append('svg')
+          .attr({
+            width: width + margin.left + margin.right + 50,
+            height: height + margin.top + margin.bottom
+          })
+        .append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+      var barGroup = svg.selectAll('rect')
+          .data(wfData)
+          .enter()
+          .append('rect')
+          .attr({
+            x: function(d, i) { return xScale(i); },
+            y: function(d) { return height - yScale(d.value); },
+            width: width / wfData.length - padding * 2,
+            height: function(d) { return yScale(d.value); },
+            fill: function(d, i) { return getFillColor(i, wfData); }
+          });
+
+      var xAxis = svg.append('g').call(xAxisGen)
+          .attr({
+            class: 'axis lh-x',
+            transform: 'translate(0, ' + height + ')'
+          }),
+        yAxis = svg.append('g').call(yAxisGen)
+            .attr({
+              class: 'axis',
+              transform: 'translate(0, 0)'
+            });
     });
   });
 
-  //Convert obj to array
-  function toArray(obj) {
-    if(Object.prototype.toString.call(obj) === '[Object Array]') return obj;
+  //Convert Object to array
+  //@obj: {Object, Array}
+  function toArray(obj, keyOverride) {
+    if('[object Array]' === Object.prototype.toString.call(obj)) return obj;
 
     var arr = [];
 
     for(var i in obj) {
       if(obj.hasOwnProperty(i)) {
-        arr.push([i, obj[i]]);
+        var returnObj = {
+          index: i
+        };
+
+        returnObj = toObj(obj[i], returnObj);
+
+        arr.push(returnObj);
       }
     }
 
     return arr;
   }
 
-  //Draw a line based on data
-  function buildBar(data, column, svg) {
-    if('undefined' === data[column] || 'undefined' === typeof svg) return;
+  /*
+   * Helper function for toArray
+   * Takes properties from obj or array and converts them to key value pairs in obj
+   * @values: {Object, Array}
+   * @obj: {Object} Optional
+   */
+  function toObj(values, obj) {
+    if('undefined' === typeof obj) obj = {};
 
-    console.log(svg);
+    if('[object Object]' !== Object.prototype.toString.call(obj)) {
+      console.log('toObj did not receive a valid object to return. Values were: ', values);
+      return;
+    }
 
-    var h = svg[0][0].clientHeight,
-      w = svg[0][0].clientWidth;
-
-    console.log(h, w, data);
-
-    svg.selectAll('rect')
-      .data(data)
-      .enter()
-      .append('rect')
-      .attr({
-        x: function(d, i) {
-          return positionBarX(i, w, data)
-        },
-        y: function(d) {
-          return positionBarY(d[1][column], h);
-        },
-        width: w / data.length - 2, //Two is default padding, make dynamic later
-        height: function(d) {
-          return setBarHeight(d[1][column]);
-        },
-        fill: 'blue'
+    if('[object Object]' === Object.prototype.toString.call(values)) {
+      for(var i in values) {
+        if(values.hasOwnProperty(i)) {
+          obj[i] = values[i];
+        }
+      }
+    }
+    else if('[object Array]' === Object.prototype.toString.call(values)) {
+      values.forEach(function(val, i) {
+        obj[i] = val;
       });
+    }
+    else {
+      obj['value'] = values;
+    }
+
+    return obj;
   }
 
-  function positionBarX(index, width, dataset) {
-    return index * (width / dataset.length);
+  function formatWaterfallData(data) {
+    var returnData = [],
+      axisKey = {
+        0: '2015A',
+        1: {
+          1: 'Korea',
+          2: 'Taiwan',
+          3: 'Japan',
+          4: 'Indonesia',
+          5: 'Thailand',
+          6: 'Malaysia',
+          7: 'Srilanka',
+          8: 'China'
+        },
+        2: '9M 2015A',
+        3: '9M 2015P'
+      },
+      currentIndex = 0; // Will be used later to spread the bars across the x axis
+
+    data[0].series.forEach(function(d, i) {
+      if(0 === i) {
+        returnData.push({
+          index: currentIndex,
+          xAxis: axisKey[i],
+          value: d.data[0].y
+        });
+
+        ++currentIndex;
+      }
+      else if(1 === i) {
+        d.data.forEach(function(dataObj, subI) {
+          if(0 !== subI) {
+            returnData.push({
+              index: currentIndex,
+              xAxis: axisKey[i][subI],
+              value: dataObj.y
+            });
+
+            ++currentIndex;
+          }
+        });
+      }
+      else if(i >= 2) {
+        returnData.push({
+          index: currentIndex,
+          xAxis: axisKey[i],
+          value: d.data.reduce(function(prev, curr) {
+            return prev.y > curr.y ? prev.y : curr.y;
+          })
+        });
+
+        ++currentIndex;
+      }
+    });
+
+    return returnData;
   }
-  function positionBarY(data, height) {
-    return 0 < data ? height - data : height - (-1 * data);
+
+  function getFillColor(i, data) {
+    if(0 === i) {
+      return 'rgb(14, 59, 140)';
+    }
+    else if(i === data.length - 2) {
+      return 'rgb(39, 170, 226)';
+    }
+    else if(i === data.length -1 ) {
+      return 'rgb(29, 117, 189)';
+    }
+    else {
+      return 'rgb(112, 140, 187)';
+    }
   }
-  function setBarHeight(data) {
-    return 0 < data? data : -1 * data;
-  }
+
 })();

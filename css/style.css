@@ -1,2 +1,15 @@
 div.graph-area {
-  width: 50%; }
+  width: 60%;
+  height: 500px;
+  margin: 0 auto; }
+
+div.graph-sub-area {
+  width: 25%;
+  float: left; }
+
+.axis text {
+  font-size: 12px; }
+
+.axis.lh-x text {
+  font-size: 16px;
+  transform: translateX(12px); }
