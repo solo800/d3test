@@ -7,10 +7,21 @@ div.graph-sub-area {
   width: 25%;
   float: left;
 }
-.axis text {
-  font-size: 12px;
+.axis {
+  text {
+    font-size: 12px;
+  }
+  &:not(.lh-x) {
+    line {
+      fill: none;
+      opacity: .7;
+      stroke: #cccccc;
+    }
+  }
 }
-.axis.lh-x  text {
-  font-size: 16px;
-  transform: translateX(12px);
+.chart-anim {
+  rect {
+    transition: 1s;
+    transition-timing-function: ease-in-out;
+  }
 }

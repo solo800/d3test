@@ -10,6 +10,11 @@ div.graph-sub-area {
 .axis text {
   font-size: 12px; }
 
-.axis.lh-x text {
-  font-size: 16px;
-  transform: translateX(12px); }
+.axis:not(.lh-x) line {
+  fill: none;
+  opacity: .7;
+  stroke: #cccccc; }
+
+.chart-anim rect {
+  transition: 1s;
+  transition-timing-function: ease-in-out; }
