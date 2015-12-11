@@ -143,7 +143,7 @@
               stroke: 'none',
               fill: function(d) { return 0 < d.d.trend ? 'green' : 'red'; }
             });
-          }, 1500);
+      }, 1500);
     });
   });
 

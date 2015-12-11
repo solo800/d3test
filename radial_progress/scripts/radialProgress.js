@@ -59,7 +59,7 @@ function radialProgress(parent) {
     function component() {
 
         _selection.each(function (data) {
-            // Select the svg element, if it exists.
+        	// Select the svg element, if it exists.
             var svg = d3.select(this).selectAll("svg").data([data]);
 
             var enter = svg.enter().append("svg").attr("class","radial-svg").append("g");
@@ -108,7 +108,6 @@ function radialProgress(parent) {
                 .attr("class","arc2")
                 .attr("transform", "translate(" + _width/2 + "," + _width/2 + ")")
                 .attr("d", _arc2);
-
 
             enter.append("g").attr("class", "labels");
             var label = svg.select(".labels").selectAll(".label").data(data);
