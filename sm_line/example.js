@@ -5,6 +5,7 @@
  * Additionally you will probably want to update the main container div which is
  * currently set to access an element with id #graph-area
  */
+
 (function() {
   $(document).ready(function() {
     //Update the immediately following url to be wherever your data is stored
@@ -83,7 +84,9 @@
         })
         .style({
           fill: 'rgb(30, 77, 140)',
-          stroke: 'rgb(30, 77, 140)'
+          stroke: 'rgb(30, 77, 140)',
+					'stroke-width': 1,
+					'font-size': '8px'
         }),
       yAxis = svg.append('g').call(yAxisGen)
           .attr({
@@ -93,7 +96,8 @@
           .style({
             fill: 'none',
             stroke: 'rgb(30, 77, 140)',
-            'stroke-width': 1
+            'stroke-width': 1,
+						'font-size': '8px'
           });
   }
 

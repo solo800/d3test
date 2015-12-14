@@ -10,7 +10,7 @@ module SmgLine {
 	}
 	interface IConfig {
 		formatData?(data: any): any[];
-		formatAxisData?(data: any): IAxisData;
+		formatAxisData?(data: any): string[];
 		colors?: string[];
 		margin?: { top: number, right: number, bottom: number, left: number };
 		padding?: number;
@@ -39,6 +39,8 @@ module SmgLine {
 		xAxisData: string[];
 	}
 	export class Graph implements ILineGraph {
+		public xAxisData: string[];
+
 		constructor(public data?: any[], public config?: IConfig) {
 			this.setConfig(config);
 			this.setData(data);
@@ -48,8 +50,6 @@ module SmgLine {
 		setAxisData(data) {
 			this.xAxisData = this.config.formatAxisData(data);
 		}
-
-		xAxisData = []
 
 		setConfig(config) {
 			if ('undefined' === typeof config) {
@@ -82,8 +82,6 @@ module SmgLine {
 				this.config.height = 'undefined' === typeof config.height ? this.defaultConfig.height : config.height;
 				this.config.width = 'undefined' === typeof config.width ? this.defaultConfig.width : config.width;
 				this.config.remove = 'undefined' === typeof config.remove ? this.defaultConfig.remove : [];
-
-				console.log(this.config, 'here');
 
 				//Axis
 				if ('undefined' === typeof config.axis) {
@@ -371,7 +369,7 @@ module SmgLine {
 				fill: 'none',
 				orientation: 'left',
 				class: 'axis',
-				transform: 'translate(-' + (this.defConMargin.left / 3.5) + ', 0)'
+				transform: 'translate(-' + (this.defConMargin.left / 7) + ', 0)'
 			}
 		}
 

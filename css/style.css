@@ -1,5 +1,5 @@
 body {
-  background-color: #c3d7f4; }
+  /*background-color: rgb(195, 215, 244);*/ }
 
 div.graph-area {
   width: 60%;
@@ -70,7 +70,7 @@ div.smg-tooltip {
  OTHER DEALINGS IN THE SOFTWARE.
  */
 .rp-background {
-  fill: #FFFFFF;
+  /*fill: #FFFFFF;*/
   fill-opacity: 0.01; }
 
 .rp-component {

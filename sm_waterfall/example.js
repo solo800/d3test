@@ -20,7 +20,7 @@
       });
 
       var wfData = formatWaterfallData(dataArr);
-
+      console.log(wfData);
       var xAxisLabels = wfData.map(function(dObj) { return dObj.xAxis; });
 
       var margin = {top: 30, right: 50, bottom: 30, left: 50},

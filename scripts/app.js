@@ -15,7 +15,7 @@
 
 			//Randomly generate data for testing
 			data = randLineData();
-
+			
 			console.log(data);
 			var lineGraph = new SmgLine.Graph(data
 				//{
@@ -30,36 +30,39 @@
 				//	//}
 				//}
 			);
-
+			console.log(lineGraph);
 			lineGraph.drawGraph();
 		});
 		*/
 
 		/***** Radial Progress Example *****/
-		/*
-		data = {
-			value: 65,
-			name: 'Some Name'
-		};
 
-		var radProg = new SmgRadialProgress.Graph(data,
-			{
-				//graphContainer: 'diff'
-				colors: {
-					20: 'rgb(0, 255, 250)',
-					40: 'rgb(33, 160, 158)',
-					80: 'rgb(44, 107, 106)',
-					100: 'rgb(208, 0, 255)'
-				}
-				//innerRadial: true,
-				//duration: 3000,
-				//innerRadialColor: 'orange'
-				//margin: {top: 40, right: 0, bottom: 20, left: 20}
-			}
-			);
+		//data = {
+		//	value: 115,
+		//	name: 'Some Name'
+		//};
 
-		radProg.drawGraph();
-		*/
+		//var radProg = new SmgRadialProgress.Graph(data
+		//	//{
+		//	//	labelColor: 'pink',
+		//	//	valueColor: 'red',
+		//	//	backgroundColor: 'orange',
+		//	//  animate: false,
+		//	//	colors: {
+		//	//		20: 'rgb(0, 255, 250)',
+		//	//		40: 'rgb(33, 160, 158)',
+		//	//		80: 'rgb(44, 107, 106)',
+		//	//		100: 'rgb(208, 0, 255)'
+		//	//	},
+		//	//	innerRadial: true,
+		//	//	duration: 3000,
+		//	//	innerRadialColor: 'orange',
+		//	//	margin: {top: 40, right: 0, bottom: 20, left: 20}
+		//	//}
+		//);
+
+		//radProg.drawGraph();
+		
 		/***** Stacked Bar Graph Example *****/
 		//d3.json("/data/objectives/increase_franchise_value_lh.anp.json", function (error, data) {
 		//	console.log(error ? error : data);
@@ -72,8 +75,6 @@
 
 		//	console.log(stack);
 		//});
-
-
 
 		/***** Horizontal Bar Graph Example *****/
 		d3.json("/data/objectives/increase_franchise_value_lh.anp.json", function (error, data) {

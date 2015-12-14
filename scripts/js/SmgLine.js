@@ -6,7 +6,6 @@ var SmgLine;
         function Graph(data, config) {
             this.data = data;
             this.config = config;
-            this.xAxisData = [];
             this.graphConId = '#graph-area-line';
             this.defConHeight = $(this.graphConId).height();
             this.defConWidth = $(this.graphConId).width();
@@ -26,7 +25,7 @@ var SmgLine;
                     fill: 'none',
                     orientation: 'left',
                     class: 'axis',
-                    transform: 'translate(-' + (this.defConMargin.left / 3.5) + ', 0)'
+                    transform: 'translate(-' + (this.defConMargin.left / 7) + ', 0)'
                 }
             };
             this.defaultConfig = {
@@ -80,7 +79,6 @@ var SmgLine;
                 this.config.height = 'undefined' === typeof config.height ? this.defaultConfig.height : config.height;
                 this.config.width = 'undefined' === typeof config.width ? this.defaultConfig.width : config.width;
                 this.config.remove = 'undefined' === typeof config.remove ? this.defaultConfig.remove : [];
-                console.log(this.config, 'here');
                 //Axis
                 if ('undefined' === typeof config.axis) {
                     this.config.axis = this.defaultAxisConfig;
